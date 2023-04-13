@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.AllArgsConstructor;
 import projeto.api.blog.model.User;
+import projeto.api.blog.model.DTO.LoginDTO;
 import projeto.api.blog.responses.DefaultResponse;
 import projeto.api.blog.service.UserService;
 
@@ -24,5 +25,10 @@ public class UserController {
     @PostMapping("/create")
     public ResponseEntity<DefaultResponse> createNewUser(@Valid @RequestBody User user) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(user));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@Valid @RequestBody LoginDTO loginDTO) {
+        return ResponseEntity.ok(userService.login(loginDTO));
     }
 }

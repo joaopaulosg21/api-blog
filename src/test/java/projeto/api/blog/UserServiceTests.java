@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.authentication.AuthenticationManager;
 
 import projeto.api.blog.model.Role;
 import projeto.api.blog.model.User;
@@ -30,13 +31,16 @@ public class UserServiceTests {
     @Mock
     private RoleRepository roleRepository;
 
+    @Mock
+    private AuthenticationManager authenticationManager;
+
     private UserService userService;
 
     private Role role;
 
     @BeforeEach
     private void setup() {
-        userService = new UserService(userRepository,roleRepository);
+        userService = new UserService(userRepository,roleRepository,authenticationManager);
         role = new Role(1L,"cliente");
     }
 

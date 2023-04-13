@@ -2,12 +2,16 @@ package projeto.api.blog.service;
 
 import java.util.Optional;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import projeto.api.blog.model.Role;
 import projeto.api.blog.model.User;
+import projeto.api.blog.model.DTO.LoginDTO;
 import projeto.api.blog.repository.RoleRepository;
 import projeto.api.blog.repository.UserRepository;
 import projeto.api.blog.responses.DefaultResponse;
@@ -19,6 +23,8 @@ public class UserService {
     private final UserRepository userRepository;
 
     private final RoleRepository roleRepository;
+
+    private final AuthenticationManager authenticationManager;
 
     public DefaultResponse createUser(User user) {
         Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
@@ -36,5 +42,18 @@ public class UserService {
         }
 
         throw new RuntimeException("User with this email already registered");
+    }
+
+    public Object login(LoginDTO loginDTO) {
+        Optional<User> optionalUser = userRepository.findByEmail(loginDTO.getEmail());
+
+        if(optionalUser.isEmpty()) {
+            throw new RuntimeException("Wrong Email or password");
+        }
+
+        UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(optionalUser.get(), loginDTO, optionalUser.get().getAuthorities());
+        Authentication authentication = authenticationManager.authenticate(usernamePassword);
+
+        return authentication.getPrincipal();
     }
 }
