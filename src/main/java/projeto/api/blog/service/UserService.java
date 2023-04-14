@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
+import projeto.api.blog.config.auth.TokenService;
 import projeto.api.blog.model.Role;
 import projeto.api.blog.model.User;
 import projeto.api.blog.model.DTO.LoginDTO;
@@ -25,6 +26,8 @@ public class UserService {
     private final RoleRepository roleRepository;
 
     private final AuthenticationManager authenticationManager;
+
+    private final TokenService tokenService;
 
     public DefaultResponse createUser(User user) {
         Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
@@ -44,7 +47,7 @@ public class UserService {
         throw new RuntimeException("User with this email already registered");
     }
 
-    public Object login(LoginDTO loginDTO) {
+    public DefaultResponse login(LoginDTO loginDTO) {
         Optional<User> optionalUser = userRepository.findByEmail(loginDTO.getEmail());
 
         if(optionalUser.isEmpty()) {
@@ -54,6 +57,8 @@ public class UserService {
         UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(optionalUser.get(), loginDTO, optionalUser.get().getAuthorities());
         Authentication authentication = authenticationManager.authenticate(usernamePassword);
 
-        return authentication.getPrincipal();
+        String token = tokenService.generateLoginToken(authentication);
+
+        return new DefaultResponse("Login Ok", token);
     }
 }
