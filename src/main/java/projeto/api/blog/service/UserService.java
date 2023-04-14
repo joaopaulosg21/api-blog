@@ -54,7 +54,7 @@ public class UserService {
             throw new RuntimeException("Wrong Email or password");
         }
 
-        UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(optionalUser.get(), loginDTO, optionalUser.get().getAuthorities());
+        UsernamePasswordAuthenticationToken usernamePassword = new UsernamePasswordAuthenticationToken(optionalUser.get().toDTO(), loginDTO, optionalUser.get().getAuthorities());
         Authentication authentication = authenticationManager.authenticate(usernamePassword);
 
         String token = tokenService.generateLoginToken(authentication);

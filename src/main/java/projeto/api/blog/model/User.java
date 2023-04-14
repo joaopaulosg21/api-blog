@@ -24,6 +24,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import projeto.api.blog.model.DTO.UserDTO;
 
 @Entity
 @Table(name="users")
@@ -83,4 +84,7 @@ public class User implements UserDetails{
         return true;
     }
 
+    public UserDTO toDTO() {
+        return new UserDTO(id, name, email, email, role);
+    }
 }
