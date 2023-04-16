@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import projeto.api.blog.model.User;
+import projeto.api.blog.model.DTO.UserDTO;
 
 @Service
 public class TokenService {
@@ -20,14 +20,14 @@ public class TokenService {
     private String secret;
     
     public String generateLoginToken(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
+        UserDTO user = (UserDTO) authentication.getPrincipal();
         
         long expiration = new Date().getTime() + Long.valueOf(exp);
 
         return Jwts.builder()
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(expiration))
-                .setSubject(user.getId().toString())
+                .setSubject(Long.toString(user.getId()))
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }

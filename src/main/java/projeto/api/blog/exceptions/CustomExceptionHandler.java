@@ -28,6 +28,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler{
 
     @ExceptionHandler({RuntimeException.class,BadCredentialsException.class})
     public ResponseEntity<Object> runtimeExceptionHandler(RuntimeException runtime, WebRequest req) {
+        runtime.printStackTrace();
         erros.put("ERROR",runtime.getMessage());
 
         return handleExceptionInternal(runtime, erros, headers, HttpStatus.BAD_REQUEST, req);
