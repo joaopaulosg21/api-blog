@@ -5,6 +5,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
@@ -52,5 +54,23 @@ public class PostServiceTests {
 
         Assertions.assertEquals("Ok", response.getStatus());
         Assertions.assertEquals("Post created",response.getMessage());
+    }
+
+    @Test
+    public void findAllPostsTest() {
+        Post post = new Post();
+        post.setId(1L);
+        post.setTitle("Test title");
+        post.setContent("Test content");
+        post.setPublished(true);
+        List<Post> posts = new ArrayList<>();
+        posts.add(post);
+
+        when(postRepository.findAllByPublished(true)).thenReturn(posts);
+
+        List<Post> response = postService.findAllPosts();
+
+        Assertions.assertEquals(1,response.size());
+        Assertions.assertEquals("Test title",response.get(0).getTitle());
     }
 }

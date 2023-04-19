@@ -1,6 +1,7 @@
 package projeto.api.blog.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -34,5 +35,9 @@ public class PostService {
             throw new RuntimeException(exc.getMessage());
         }
 
+    }
+
+    public List<Post> findAllPosts() {
+        return postRepository.findAllByPublished(true);
     }
 }
