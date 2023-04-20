@@ -1,6 +1,8 @@
 package projeto.api.blog;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -72,5 +74,45 @@ public class PostServiceTests {
 
         Assertions.assertEquals(1,response.size());
         Assertions.assertEquals("Test title",response.get(0).getTitle());
+    }
+    
+    @Test
+    public void updatePostTest() {
+        User user = new User(1L,"Test name", "teste@email.com","123",LocalDate.of(1998, 04, 11),null);
+
+        Post post = new Post();
+        post.setId(1L);
+        post.setTitle("Test title");
+        post.setContent("Test content");
+        post.setPublished(true);
+        post.setUser(user);
+
+        Post updatePost = new Post();
+        updatePost.setTitle("New title");
+        updatePost.setContent("New content");
+
+        when(postRepository.findByPublishedAndUserIdAndId(true, user.getId(), post.getId())).thenReturn(Optional.of(post));
+
+        when(postRepository.save(any(Post.class))).thenReturn(post);
+
+        DefaultResponse response = postService.updatePost(updatePost, user.toDTO(), 1L);
+
+        Assertions.assertEquals("Ok", response.getStatus());
+        Assertions.assertEquals("Post updated", response.getMessage());
+    }
+    
+    @Test
+    public void updatePostExceptionTest() {
+
+        Post updatePost = new Post();
+        updatePost.setTitle("New title");
+        updatePost.setContent("New content");
+        User user = new User(1L,"Test name", "teste@email.com","123",LocalDate.of(1998, 04, 11),null);
+
+        when(postRepository.findByPublishedAndUserIdAndId(anyBoolean(), anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        RuntimeException response = Assertions.assertThrows(RuntimeException.class, () -> postService.updatePost(updatePost, user.toDTO(), 1L));
+        
+        Assertions.assertEquals("Post does not exist", response.getMessage());
     }
 }
