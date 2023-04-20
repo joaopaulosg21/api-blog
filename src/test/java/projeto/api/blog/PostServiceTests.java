@@ -115,4 +115,39 @@ public class PostServiceTests {
         
         Assertions.assertEquals("Post does not exist", response.getMessage());
     }
+
+    @Test 
+    public void deletePostTest() {
+        
+        User user = new User(1L,"Test name", "teste@email.com","123",LocalDate.of(1998, 04, 11),null);
+        Post post = new Post();
+        post.setId(1L);
+        post.setTitle("Test title");
+        post.setContent("Test content");
+        post.setPublished(true);
+        post.setUser(user);
+
+        when(postRepository.findByPublishedAndUserIdAndId(true, user.getId(), post.getId())).thenReturn(Optional.of(post));
+
+        DefaultResponse response = postService.deletePost(user.toDTO(), 1L);
+
+        Assertions.assertEquals("Ok", response.getStatus());
+        Assertions.assertEquals("Post deleted", response.getMessage());
+    }
+
+    @Test
+    public void deletePostExceptionTest() {
+
+        Post updatePost = new Post();
+        updatePost.setTitle("New title");
+        updatePost.setContent("New content");
+        User user = new User(1L,"Test name", "teste@email.com","123",LocalDate.of(1998, 04, 11),null);
+
+        when(postRepository.findByPublishedAndUserIdAndId(anyBoolean(), anyLong(), anyLong())).thenReturn(Optional.empty());
+
+        RuntimeException response = Assertions.assertThrows(RuntimeException.class, () -> postService.deletePost(user.toDTO(), 1L));
+        
+        Assertions.assertEquals("Post does not exist", response.getMessage());
+
+    }
 }

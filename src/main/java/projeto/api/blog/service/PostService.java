@@ -60,4 +60,19 @@ public class PostService {
             throw new RuntimeException(exc.getMessage());
         }
     }
+
+    public DefaultResponse deletePost(UserDTO userDTO, long postId) {
+        Optional<Post> optionalPost = postRepository.findByPublishedAndUserIdAndId(true, userDTO.getId(), postId);
+
+        if(optionalPost.isEmpty()) {
+            throw new RuntimeException("Post does not exist");
+        }
+
+        try {
+            postRepository.delete(optionalPost.get());
+            return new DefaultResponse("Ok", "Post deleted");
+        }catch(Exception exc) {
+            throw new RuntimeException(exc.getMessage());
+        }
+    }
 }

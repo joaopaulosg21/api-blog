@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,5 +42,10 @@ public class PostController {
     @PutMapping("/update/{postId}")
     public ResponseEntity<DefaultResponse> updatePost(@AuthenticationPrincipal UserDTO userDTO, @Valid @RequestBody Post post, @PathVariable long postId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(postService.updatePost(post, userDTO, postId));
+    }
+
+    @DeleteMapping("/delete/{postId}")
+    public ResponseEntity<DefaultResponse> deletePost(@AuthenticationPrincipal UserDTO userDTO, @PathVariable long postId) {
+        return ResponseEntity.ok(postService.deletePost(userDTO, postId));
     }
 }
